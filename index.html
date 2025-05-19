@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Peso y Balance</title>
-    <link rel="stylesheet" href="style.css"> <!-- Asume que style.css está en la misma carpeta -->
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="manifest" href="manifest.json"> <!-- Ruta relativa para el manifiesto -->
+    <link rel="manifest" href="manifest.json"> <!-- Solo uno -->
     <meta name="theme-color" content="#007bff">
-    <link rel="manifest" href="manifest.json"> <!-- Ruta relativa -->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 </head>
@@ -56,21 +55,19 @@
                 </div>
             </div>
         </div>
-
-        <div id="chart-container" class="hidden">
+        
+        <button id="toggle-chart-btn" class="hidden" style="margin-top: 20px; width: auto; display: block; margin-left: auto; margin-right: auto;">Mostrar/Ocultar Gráfico</button>
+        <div id="chart-container" class="hidden"> <!-- Solo un bloque para el gráfico -->
             <h2>Gráfico de Centro de Gravedad</h2>
             <canvas id="cgEnvelopeChart"></canvas>
-        </div>
+        </div> 
 
     </div>
-    <script src="script.js"></script> <!-- Asume que script.js está en la misma carpeta -->
-    <script>
+    <script src="script.js"></script>
+    <script> // Solo un script para registrar el Service Worker, antes de </body>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                // La ruta al sw.js DEBE ser relativa a la raíz del dominio para GitHub Pages
-                // Si tu repo es https://username.github.io/calculadoras-pb/
-                // entonces el sw.js estará en https://username.github.io/calculadoras-pb/sw.js
-                navigator.serviceWorker.register('./sw.js') // Ruta relativa al sw.js
+                navigator.serviceWorker.register('sw.js') // Ruta relativa
                     .then(registration => {
                         console.log('Service Worker registrado con éxito. Scope:', registration.scope);
                     })
@@ -81,17 +78,4 @@
         }
     </script>
 </body>
-<script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js') // Ruta relativa
-                .then(registration => {
-                    console.log('Service Worker registrado con éxito. Scope:', registration.scope);
-                })
-                .catch(error => {
-                    console.log('Fallo en el registro del Service Worker:', error);
-                });
-        });
-    }
-</script>
 </html>

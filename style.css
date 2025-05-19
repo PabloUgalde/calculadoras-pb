@@ -1,4 +1,7 @@
 /* style.css */
+html {
+    scroll-behavior: smooth; /* Para scroll suave al usar anclas o JS para scroll */
+}
 
 body {
     font-family: sans-serif;
