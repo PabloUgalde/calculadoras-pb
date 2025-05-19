@@ -371,7 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (minY_from_envelopes !== Infinity) {
             // Queremos que el eje empiece en o justo por debajo del minY_from_envelopes
-            scaleMinY = Math.floor((minY_from_envelopes - yPadding * 0.5) / 100) * 100; // Un poco de padding pero basado en el mínimo real
+            scaleMinY = Math.floor(minY_from_envelopes / 100) * 100; // Un poco de padding pero basado en el mínimo real
             if (scaleMinY < 0) scaleMinY = 0;
         }
         if (airplane.limits.maxTakeOffWeight_lbs) {
@@ -417,7 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         max: scaleMaxY
                     }
                 },
-                plugins: { /* ... (tooltips y leyenda como antes) ... */ }
+                plugins: { legend: { position: 'top' }, tooltip: { callbacks: { label: function(context) { let label = context.dataset.label || ''; if (label) label += ': '; if (context.parsed.y !== null) label += `Peso ${context.parsed.y.toFixed(0)} lbs`; if (context.parsed.x !== null) label += `, Mom/1000 ${context.parsed.x.toFixed(1)}`; return label;}}}}
             }
         });
     }
