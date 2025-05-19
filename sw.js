@@ -1,17 +1,13 @@
 // sw.js
-
 const CACHE_NAME = 'peso-y-balance-cache-v1'; // Incrementa si cambias los archivos cacheados
-// Las rutas deben ser relativas a la ubicación del sw.js (que está en la raíz del proyecto en el repo)
 const URLS_TO_CACHE = [
-    './', // Representa index.html en el directorio actual
+    './', // Representa index.html en el directorio actual del sw.js
     './index.html',
     './style.css',
     './script.js',
     './manifest.json', // Cachear el manifiesto
     './icons/icon-192x192.png',
     './icons/icon-512x512.png'
-    // No necesitas cachear explícitamente la URL de Chart.js si es un CDN,
-    // el navegador lo manejará con sus propias políticas de caché.
 ];
 
 self.addEventListener('install', event => {

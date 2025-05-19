@@ -2,21 +2,21 @@
     "name": "Calculadora Peso y Balance Aéreo",
     "short_name": "P&B Calc",
     "description": "Una aplicación para calcular el peso y balance de aeronaves.",
-    "start_url": ".", 
-    "scope": ".",     
+    "start_url": ".",
+    "scope": ".",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#007bff",
     "orientation": "portrait",
     "icons": [
         {
-            "src": "icons/icon-192x192.png", 
+            "src": "icons/icon-192x192.png",
             "sizes": "192x192",
             "type": "image/png",
             "purpose": "any maskable"
         },
         {
-            "src": "icons/icon-512x512.png", 
+            "src": "icons/icon-512x512.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any maskable"
