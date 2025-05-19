@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Peso y Balance</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Incluir Chart.js desde un CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#007bff">
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Peso y Balance</h1>
+
+        <label for="airplane-select">Seleccionar Avión:</label>
+        <select id="airplane-select">
+            <option value="">-- Elija un avión --</option>
+        </select>
+
+        <div id="airplane-details" class="hidden">
+            <h2 id="airplane-name-title"></h2>
+            <p><strong>Peso Vacío:</strong> <span id="empty-weight-lbs"></span> lbs / <span id="empty-weight-kg"></span> kg</p>
+            <p><strong>Momento Vacío:</strong> <span id="empty-moment"></span> lb-in</p>
+            <p><strong>CG Vacío:</strong> <span id="empty-cg"></span> in</p>
+        </div>
+
+        <div class="calculation-area">
+            <div class="input-column">
+                <h3>Ingreso de Carga</h3>
+                <div id="inputs-container" class="hidden">
+                    <!-- Los campos de entrada se generarán aquí por JS -->
+                </div>
+                <button id="calculate-btn" class="hidden">Calcular</button>
+            </div>
+
+            <div class="output-column">
+                <h3>Resultados por Item</h3>
+                <div id="itemized-results-container" class="hidden">
+                    <!-- Resultados por item se mostrarán aquí -->
+                </div>
+
+                <!-- MOVIDO AQUÍ -->
+                <div id="total-results-container" class="hidden">
+                    <h2>Resultados Totales</h2> <!-- Podrías cambiar a H3 si prefieres consistencia con "Resultados por Item" -->
+                    <p><strong>Peso Total (Zero Fuel Weight):</strong> <span id="total-zfw-lbs"></span> lbs / <span id="total-zfw-kg"></span> kg</p>
+                    <p><strong>Peso Total (con Combustible):</strong> <span id="total-weight-lbs"></span> lbs / <span id="total-weight-kg"></span> kg</p>
+                    <p><strong>Momento Total:</strong> <span id="total-moment"></span> lb-in</p>
+                    <p><strong>Centro de Gravedad (CG):</strong> <span id="calculated-cg"></span> in</p>
+                    <p><strong>Categoría de Operación:</strong> <span id="operation-category"></span></p>
+                    <div id="status-messages">
+                        <!-- Mensajes de estado aquí -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MOVIDO AQUÍ, FUERA DE CALCULATION-AREA -->
+        <div id="chart-container" class="hidden">
+            <h2>Gráfico de Centro de Gravedad</h2>
+            <canvas id="cgEnvelopeChart"></canvas>
+        </div>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js') // Ruta al archivo sw.js
+                .then(registration => {
+                    console.log('Service Worker registrado con éxito:', registration);
+                })
+                .catch(error => {
+                    console.log('Fallo en el registro del Service Worker:', error);
+                });
+        });
+    }
+</script>
+</html>

@@ -1,0 +1,277 @@
+/* style.css */
+
+body {
+    font-family: sans-serif;
+    line-height: 1.6; /* Línea base para texto general, se puede anular localmente */
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+h2 { /* Para títulos de sección principales como "Resultados Totales" (si es H2) y "Gráfico" */
+    color: #333;
+    text-align: center;
+    font-size: 1.3em;
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
+
+h3 { /* Para subtítulos de sección como "Ingreso de Carga" y "Resultados por Item" */
+    color: #333;
+    text-align: center;
+    font-size: 1.2em;
+    margin-top: 0; /* El padding de la columna ya da espacio */
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+select, input[type="number"], button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+}
+
+input[type="number"] {
+    margin-bottom: 10px;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border: none;
+    margin-top: 10px; /* Espacio después del último input group */
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* --- Layout de dos columnas --- */
+.calculation-area {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px; /* Espacio antes del gráfico */
+}
+
+.input-column, .output-column {
+    flex: 1;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column; /* Para que los hijos se apilen verticalmente */
+}
+
+/* --- Columna de Inputs --- */
+#inputs-container fieldset {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+#inputs-container legend {
+    font-weight: bold;
+    padding: 0 10px; /* Añade padding al legend */
+    color: #555;
+}
+
+.input-group {
+    display: flex;
+    flex-wrap: wrap; /* Permite que label ocupe su propia línea si es necesario */
+    align-items: flex-start; /* Alinea los items al inicio de su contenedor flex */
+    margin-bottom: 12px;
+    /* border: 1px dashed lightcoral; */ /* Descomenta para debug visual del grupo */
+}
+
+.input-group label {
+    flex-basis: 100%; /* La etiqueta ocupa toda la línea */
+    margin-bottom: 5px; /* Espacio entre la etiqueta y los inputs debajo */
+    font-weight: normal;
+    font-size: 0.9em;
+    color: #444;
+}
+
+.input-group .weight-inputs {
+    display: flex;
+    flex-basis: 70%;
+    gap: 8px;
+}
+.input-group .weight-inputs input {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.input-group .arm-info {
+    flex-basis: 28%;
+    font-size: 0.85em;
+    color: #777;
+    text-align: right;
+    margin-left: auto;
+}
+.input-group input.single-input {
+    flex-basis: 70%;
+    margin-bottom: 0;
+}
+
+/* --- Columna de Outputs --- */
+
+/* Título "Desglose de Carga:" dentro de itemized-results */
+#itemized-results-container h4 {
+    margin-top: 0;
+    margin-bottom: 10px; /* Espacio antes del primer item */
+    font-size: 1em;
+    font-weight: bold;
+    color: #333;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ddd; /* Línea debajo de "Desglose de Carga" */
+}
+
+/* Items individuales en "Resultados por Item" */
+#itemized-results-container p {
+    margin: 0;
+    padding: 7px 0; /* Espacio vertical interno (7px arriba y 7px abajo del texto) */
+    line-height: 1.3; /* Altura de línea compacta */
+    border-bottom: 1px solid #eee; /* Línea divisoria delgada y clara entre items */
+    font-size: 0.95em;
+    color: #444;
+}
+#itemized-results-container p strong {
+    color: #222; /* Resaltar la parte "Nombre Estación:" */
+}
+
+/* Quitar la línea divisoria del último item en la lista de "Resultados por Item" */
+#itemized-results-container p:last-of-type {
+    border-bottom: none;
+}
+
+/* Contenedor de Resultados Totales */
+#total-results-container {
+    margin-top: 20px; /* Espacio después de la lista de items */
+    padding-top: 15px;
+    border-top: 2px solid #ccc; /* Separador más grueso antes de los totales */
+}
+
+/* Párrafos en "Resultados Totales" (excluyendo los mensajes de estado) */
+#total-results-container > h2 { /* Título "Resultados Totales" */
+    font-size: 1.2em; /* Consistente con otros títulos de sección */
+    margin-top: 0; /* Ya tiene padding-top el contenedor */
+    margin-bottom: 10px;
+}
+
+#total-results-container > p {
+    margin: 0;
+    padding: 5px 0; /* Espacio vertical interno para líneas de total */
+    line-height: 1.4; /* Un poco más de espacio para los totales, o igualar a 1.3 */
+    font-size: 0.95em;
+    color: #333;
+}
+#total-results-container > p strong {
+    color: #000; /* Totales más destacados */
+}
+
+/* Mensajes de estado */
+#status-messages {
+    margin-top: 15px;
+}
+#status-messages p {
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 8px; /* Espacio entre mensajes de estado */
+    font-size: 0.9em; /* Mensajes un poco más pequeños */
+    line-height: 1.4;
+}
+
+.status-ok {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+.status-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* --- Gráfico --- */
+#chart-container {
+    margin-top: 20px; /* Reajustado, el calculation-area ya tiene margin-bottom */
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fdfdfd;
+    width: 100%;
+    box-sizing: border-box;
+}
+#cgEnvelopeChart {
+    max-height: 500px;
+    width: 100% !important;
+    height: auto !important;
+}
+
+.input-pair-container { /* Nueva clase o puedes seguir usando .weight-inputs si solo hay pares */
+    display: flex;
+    flex-basis: calc(70% - 10px); /* 70% del ancho del .input-group, menos un poco por el gap */
+    gap: 10px; /* Espacio entre los dos inputs del par */
+    /* border: 1px dashed blue; */ /* Descomenta para debug visual */
+}
+
+.input-pair-container input {
+    flex: 1; /* Cada input del par toma la mitad del espacio disponible en el contenedor del par */
+    margin-bottom: 0; /* Quitar margen inferior de los inputs individuales del par */
+}
+
+/* Estilo para un input único en la línea (como el de aceite) */
+.input-group input.single-input {
+    flex-basis: calc(70% - 10px); /* Mismo ancho base que el contenedor de pares */
+    margin-bottom: 0;
+    /* border: 1px dashed green; */ /* Descomenta para debug visual */
+}
+
+.input-group .arm-info {
+    flex-basis: 28%; /* Espacio para la info del brazo */
+    font-size: 0.85em;
+    color: #777;
+    text-align: right;
+    margin-left: auto; /* Empuja a la derecha */
+    padding-top: 8px; /* Alinea verticalmente con el texto dentro de los inputs */
+    /* border: 1px dashed orange; */ /* Descomenta para debug visual */
+    box-sizing: border-box;
+}
