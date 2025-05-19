@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME = 'peso-y-balance-cache-v1'; // Incrementa si cambias los archivos cacheados
+const CACHE_NAME = 'peso-y-balance-cache-v2'; // Incrementa si cambias los archivos cacheados
 const URLS_TO_CACHE = [
     './', // Representa index.html en el directorio actual del sw.js
     './index.html',
