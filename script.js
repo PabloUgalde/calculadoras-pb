@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         "c172m_kua": {
             name: "Cessna 172M Skyhawk (CC-KUA)",
-            emptyWeight_lbs: 1366.0, emptyMoment_lb_in: 53800.0, fuel_gallons_per_lbs: 1 / 6,
+            emptyWeight_lbs: 1457.5, emptyMoment_lb_in: 61350.0, fuel_gallons_per_lbs: 1 / 6,
             stations: [ 
                 { name: "Aceite (8 Qts)", arm_in: -13.33, id: "oil", type: "single_weight", default_value: 15 }, 
                 { name: "Piloto y Pas. Delantero", arm_in: 37.1, id: "front_pax", type: "paired_weight" }, 
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         "c182g_klc": {
             name: "Cessna 182G Skylane (CC-KLC)",
-            emptyWeight_lbs: 1728.0, emptyMoment_lb_in: 61157.0, fuel_gallons_per_lbs: 1 / 6,
+            emptyWeight_lbs: 1728.0, emptyMoment_lb_in: 62157.0, fuel_gallons_per_lbs: 1 / 6,
             stations: [ 
                 { name: "Aceite (12 Qts)", arm_in: -13.64, id: "oil", type: "single_weight", default_value: 22 }, 
                 { name: "Piloto y Pas. Delantero", arm_in: 36.0, id: "front_pax", type: "paired_weight" }, 
