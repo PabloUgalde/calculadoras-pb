@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             stations: [ 
                 { name: "Aceite (6 Qts)", arm_in: -9.09, id: "oil", type: "single_weight", default_value: 11 }, 
                 { name: "Piloto y Pasajero", arm_in: 39.0, id: "front_pax", type: "paired_weight" }, 
-                { name: "Combustible Usable (Gal)", arm_in: 42.2, id: "fuel", type: "paired_fuel", max_gallons: 38.0 }, 
+                { name: "Combustible Usable (Gal)", arm_in: 42.2, id: "fuel", type: "paired_fuel", max_gallons: 35.0 }, 
                 { name: "Equipaje Área 1 (Max 120 lbs)", arm_in: 64.0, id: "baggage1", type: "paired_weight", max_lbs: 120 },
                 { name: "Equipaje Área 2 (Max 40 lbs)", arm_in: 84.0, id: "baggage2", type: "paired_weight", max_lbs: 40 } 
             ],
