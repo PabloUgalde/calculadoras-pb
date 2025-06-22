@@ -74,8 +74,8 @@ document.addEventListener('DOMContentLoaded', () => {
             stations: [ 
                 { name: "Aceite (8 Qts)", arm_in: -13.33, id: "oil", type: "single_weight", default_value: 15 }, 
                 { name: "Piloto y Pas. Delantero", arm_in: 37.1, id: "front_pax", type: "paired_weight" }, 
+                { name: "Pasajeros Traseros", arm_in: 73.0, id: "rear_pax", type: "paired_weight" },                 
                 { name: "Combustible Usable", arm_in: 47.8, id: "fuel", type: "paired_fuel", max_gallons: 38 }, 
-                { name: "Pasajeros Traseros", arm_in: 73.0, id: "rear_pax", type: "paired_weight" }, 
                 { name: "Equipaje Área 1", arm_in: 90.9, id: "baggage1", type: "paired_weight", max_lbs: 120 }, 
                 { name: "Equipaje Área 2", arm_in: 123.0, id: "baggage2", type: "paired_weight", max_lbs: 50 } ],
             limits: { maxRampWeight_lbs: 2307.5, maxTakeOffWeight_lbs: 2300, maxLandingWeight_lbs: 2300, cgEnvelopeGraphNormal: [ { x: 52.5, y: 1500 }, { x: 68.25, y: 1950 }, { x: 88.5, y: 2300 }, { x: 108.8, y: 2300 }, { x: 92.3, y: 1950 }, { x: 71.0, y: 1500 }, { x: 52.5, y: 1500 } ], cgEnvelopeNormal: [ { weight: 1500, fwd_in: 35.0, aft_in: 47.33 }, { weight: 1950, fwd_in: 35.0, aft_in: 47.33 }, { weight: 2300, fwd_in: 38.48, aft_in: 47.30 } ], maxUtilityWeight_lbs: 2000, cgEnvelopeGraphUtility: [ { x: 52.5, y: 1500 }, { x: 68.25, y: 1950 }, { x: 71.2, y: 2000 }, { x: 81.5, y: 2000 }, { x: 60.6, y: 1500 }, { x: 52.5, y: 1500 } ], cgEnvelopeUtility: [ { weight: 1500, fwd_in: 35.0, aft_in: 40.4 }, { weight: 1950, fwd_in: 35.0, aft_in: 40.72 }, { weight: 2000, fwd_in: 35.6, aft_in: 40.75 } ], maxCombinedBaggage_lbs: 120 }
@@ -86,8 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
             stations: [ 
                 { name: "Aceite (12 Qts)", arm_in: -13.64, id: "oil", type: "single_weight", default_value: 22 }, 
                 { name: "Piloto y Pas. Delantero", arm_in: 36.0, id: "front_pax", type: "paired_weight" }, 
+                { name: "Pasajeros Traseros", arm_in: 71.0, id: "rear_pax", type: "paired_weight" },                 
                 { name: "Combustible Usable (Gal)", arm_in: 48.0, id: "fuel", type: "paired_fuel", max_gallons: 79.0 }, 
-                { name: "Pasajeros Traseros", arm_in: 71.0, id: "rear_pax", type: "paired_weight" }, 
                 { name: "Equipaje", arm_in: 97.5, id: "baggage", type: "paired_weight", max_lbs: 120 } ],
             limits: { maxTakeOffWeight_lbs: 2800, maxLandingWeight_lbs: 2800, cgEnvelopeGraphNormal: [ { x: 59.0, y: 1800 }, { x: 74.0, y: 2250 }, { x: 107.5, y: 2800 }, { x: 133.5, y: 2800 }, { x: 107.1, y: 2250 }, { x: 85.5, y: 1800 }, { x: 59.0, y: 1800 } ], cgEnvelopeNormal: [ { weight: 1800, fwd_in: 32.78, aft_in: 47.50 }, { weight: 2250, fwd_in: 32.89, aft_in: 47.60 }, { weight: 2800, fwd_in: 38.39, aft_in: 47.68 } ], defaultCategory: "Normal" }
         }
@@ -237,43 +237,186 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-    
-    function checkLimitsAndCategory(airplane, weight, cg, momentFull) { 
-        let inLimits = true; let category = "Fuera de Límites"; statusMessagesDiv.innerHTML = ''; 
-        if (weight > airplane.limits.maxTakeOffWeight_lbs) { addStatusMessage(`ERROR: Peso Total (${weight.toFixed(1)} lbs) excede el Máximo de Despegue (${airplane.limits.maxTakeOffWeight_lbs} lbs).`, 'error'); inLimits = false; } 
-        else { addStatusMessage(`Peso Total (${weight.toFixed(1)} lbs) DENTRO del Máximo de Despegue (${airplane.limits.maxTakeOffWeight_lbs} lbs).`, 'ok');} 
-        if (airplane.limits.maxRampWeight_lbs && weight > airplane.limits.maxRampWeight_lbs) { addStatusMessage(`ADVERTENCIA: Peso Total (${weight.toFixed(1)} lbs) excede el Máximo en Rampa (${airplane.limits.maxRampWeight_lbs} lbs).`, 'warning');} 
-        let inCalculatedCategoryLimits = false; 
-        if (inLimits) { 
-            let envelopeToCheck; let categoryName; let maxCategoryWeight = airplane.limits.maxTakeOffWeight_lbs; 
-            if (airplane.limits.defaultCategory === "Utilitaria" && airplane.limits.cgEnvelopeUtility) { envelopeToCheck = airplane.limits.cgEnvelopeUtility; categoryName = "Utilitaria"; } 
-            else if (airplane.limits.defaultCategory === "Normal" && airplane.limits.cgEnvelopeNormal) { envelopeToCheck = airplane.limits.cgEnvelopeNormal; categoryName = "Normal"; } 
-            else if (airplane.limits.cgEnvelopeUtility && airplane.limits.maxUtilityWeight_lbs && weight <= airplane.limits.maxUtilityWeight_lbs) { envelopeToCheck = airplane.limits.cgEnvelopeUtility; categoryName = "Utilitaria"; maxCategoryWeight = airplane.limits.maxUtilityWeight_lbs;} 
-            else if (airplane.limits.cgEnvelopeNormal) { envelopeToCheck = airplane.limits.cgEnvelopeNormal; categoryName = "Normal"; } 
-            else { addStatusMessage("ERROR: No se encontró envolvente de CG definida.", "error"); inLimits = false;} 
-            
-            if (envelopeToCheck && inLimits) { // Solo si hay envelope y aún estamos en límites de peso
-                if (weight <= maxCategoryWeight) {
-                    const { fwdLimit, aftLimit } = getCGLimitsForWeight(envelopeToCheck, weight); 
-                    if (fwdLimit !== null && aftLimit !== null) { 
-                        if (cg >= fwdLimit && cg <= aftLimit) { inCalculatedCategoryLimits = true; category = categoryName; addStatusMessage(`CG (${cg.toFixed(2)} in) DENTRO de Cat. ${categoryName} (${fwdLimit.toFixed(2)} - ${aftLimit.toFixed(2)} in).`, 'ok'); } 
-                        else { if (cg < fwdLimit) addStatusMessage(`ERROR (Cat. ${categoryName}): CG (${cg.toFixed(2)} in) DEMASIADO ADELANTE. Límite: ${fwdLimit.toFixed(2)} in.`, 'error'); if (cg > aftLimit) addStatusMessage(`ERROR (Cat. ${categoryName}): CG (${cg.toFixed(2)} in) DEMASIADO ATRÁS. Límite: ${aftLimit.toFixed(2)} in.`, 'error'); inLimits = false; }
-                    } else { addStatusMessage(`ADVERTENCIA: No se pudo determinar límites CG (Cat. ${categoryName}) para peso (${weight.toFixed(1)} lbs).`, 'warning'); inLimits = false; }
-                } else if (categoryName === "Utilitaria" && airplane.limits.cgEnvelopeNormal) { // Peso excede Utilitaria, ¿puede ser Normal?
-                     const { fwdLimit, aftLimit } = getCGLimitsForWeight(airplane.limits.cgEnvelopeNormal, weight); categoryName = "Normal"; 
-                     if (fwdLimit !== null && aftLimit !== null) { 
-                        if (cg >= fwdLimit && cg <= aftLimit) { inCalculatedCategoryLimits = true; category = categoryName; addStatusMessage(`Peso excede Cat. Utilitaria. CG (${cg.toFixed(2)} in) DENTRO de Cat. ${categoryName} (${fwdLimit.toFixed(2)} - ${aftLimit.toFixed(2)} in).`, 'ok');} 
-                        else { if (cg < fwdLimit) addStatusMessage(`ERROR (Cat. ${categoryName}): CG (${cg.toFixed(2)} in) DEMASIADO ADELANTE. Límite: ${fwdLimit.toFixed(2)} in.`, 'error'); if (cg > aftLimit) addStatusMessage(`ERROR (Cat. ${categoryName}): CG (${cg.toFixed(2)} in) DEMASIADO ATRÁS. Límite: ${aftLimit.toFixed(2)} in.`, 'error'); inLimits = false;}
-                    } else { addStatusMessage(`ADVERTENCIA: No se pudo determinar límites CG (Cat. ${categoryName}) para peso (${weight.toFixed(1)} lbs).`, 'warning'); inLimits = false;}
-                } else { // Peso excede la categoría única o la Normal si no hay alternativa
-                     addStatusMessage(`ERROR: Peso (${weight.toFixed(1)} lbs) excede el máximo para Cat. ${categoryName} (${maxCategoryWeight} lbs).`, 'error');
-                     inLimits = false;
+
+    function checkLimitsAndCategory(airplane, weight, cg, momentFull) {
+        let overallInLimits = true; // Start assuming in limits
+        let determinedCategory = "Fuera de Límites";
+        let cgIsInLimitsForSomeCategory = false;
+        statusMessagesDiv.innerHTML = '';
+
+        // 1. Check Max Take-Off Weight
+        if (weight > airplane.limits.maxTakeOffWeight_lbs) {
+            addStatusMessage(`ERROR: Peso Total (${weight.toFixed(1)} lbs) excede el Máximo de Despegue (${airplane.limits.maxTakeOffWeight_lbs} lbs).`, 'error');
+            overallInLimits = false;
+        } else {
+            addStatusMessage(`Peso Total (${weight.toFixed(1)} lbs) DENTRO del Máximo de Despegue (${airplane.limits.maxTakeOffWeight_lbs} lbs).`, 'ok');
+        }
+
+        // 2. Check Max Ramp Weight (Warning only)
+        if (airplane.limits.maxRampWeight_lbs && weight > airplane.limits.maxRampWeight_lbs) {
+            addStatusMessage(`ADVERTENCIA: Peso Total (${weight.toFixed(1)} lbs) excede el Máximo en Rampa (${airplane.limits.maxRampWeight_lbs} lbs).`, 'warning');
+        }
+
+        if (!overallInLimits) { // If already over MTOW, no point in checking CG envelopes
+            operationCategorySpan.textContent = determinedCategory; // Remains "Fuera de Límites"
+            addStatusMessage("AVIÓN FUERA DE LÍMITES (SOBREPESO). NO DESPEGAR.", 'error', true);
+            return;
+        }
+
+        // 3. CG and Category Checks
+        let utilityChecked = false;
+        let utilityOk = false;
+        let utilityApplicableByWeight = false;
+        let normalChecked = false;
+        let normalOk = false;
+
+        // --- Check Utility Category (if applicable) ---
+        if (airplane.limits.cgEnvelopeUtility) {
+            utilityChecked = true;
+            if (airplane.limits.maxUtilityWeight_lbs && weight <= airplane.limits.maxUtilityWeight_lbs) {
+                utilityApplicableByWeight = true;
+                const { fwdLimit, aftLimit } = getCGLimitsForWeight(airplane.limits.cgEnvelopeUtility, weight);
+                if (fwdLimit !== null && aftLimit !== null) {
+                    if (cg >= fwdLimit && cg <= aftLimit) {
+                        utilityOk = true;
+                    } else {
+                        const limitsStr = `Límites Utilitaria: ${fwdLimit.toFixed(2)} - ${aftLimit.toFixed(2)} in.`;
+                        if (cg < fwdLimit) addStatusMessage(`INFO (Cat. Utilitaria): CG (${cg.toFixed(2)} in) ADELANTE. ${limitsStr}`, 'info');
+                        if (cg > aftLimit) addStatusMessage(`INFO (Cat. Utilitaria): CG (${cg.toFixed(2)} in) ATRÁS. ${limitsStr}`, 'info');
+                    }
+                } else {
+                    addStatusMessage(`ADVERTENCIA: No se pudo determinar límites CG (Cat. Utilitaria) para peso (${weight.toFixed(1)} lbs).`, 'warning');
+                }
+            } else if (airplane.limits.maxUtilityWeight_lbs && weight > airplane.limits.maxUtilityWeight_lbs) {
+                 addStatusMessage(`INFO: Peso (${weight.toFixed(1)} lbs) excede Máx. Cat. Utilitaria (${airplane.limits.maxUtilityWeight_lbs} lbs). No aplica Cat. Utilitaria por peso.`, 'info');
+            } else { // No maxUtilityWeight_lbs defined, or weight is fine, check CG
+                 utilityApplicableByWeight = true; // Assumed applicable if no specific max weight or within it
+                 const { fwdLimit, aftLimit } = getCGLimitsForWeight(airplane.limits.cgEnvelopeUtility, weight);
+                if (fwdLimit !== null && aftLimit !== null) {
+                    if (cg >= fwdLimit && cg <= aftLimit) {
+                        utilityOk = true;
+                    } else {
+                        const limitsStr = `Límites Utilitaria: ${fwdLimit.toFixed(2)} - ${aftLimit.toFixed(2)} in.`;
+                        if (cg < fwdLimit) addStatusMessage(`INFO (Cat. Utilitaria): CG (${cg.toFixed(2)} in) ADELANTE. ${limitsStr}`, 'info');
+                        if (cg > aftLimit) addStatusMessage(`INFO (Cat. Utilitaria): CG (${cg.toFixed(2)} in) ATRÁS. ${limitsStr}`, 'info');
+                    }
+                } else {
+                    addStatusMessage(`ADVERTENCIA: No se pudo determinar límites CG (Cat. Utilitaria) para peso (${weight.toFixed(1)} lbs).`, 'warning');
                 }
             }
-        } 
-        operationCategorySpan.textContent = category; 
-        if (inLimits && inCalculatedCategoryLimits) { addStatusMessage(`AVIÓN DENTRO DE LÍMITES (Categoría ${category}).`, 'ok', true);} 
-        else { addStatusMessage("AVIÓN FUERA DE LÍMITES. NO DESPEGAR.", 'error', true);}
+        }
+
+        // --- Check Normal Category (if applicable) ---
+        if (airplane.limits.cgEnvelopeNormal) {
+            normalChecked = true;
+            const { fwdLimit, aftLimit } = getCGLimitsForWeight(airplane.limits.cgEnvelopeNormal, weight);
+            if (fwdLimit !== null && aftLimit !== null) {
+                if (cg >= fwdLimit && cg <= aftLimit) {
+                    normalOk = true;
+                } else {
+                    const limitsStr = `Límites Normal: ${fwdLimit.toFixed(2)} - ${aftLimit.toFixed(2)} in.`;
+                    if (cg < fwdLimit) addStatusMessage(`INFO (Cat. Normal): CG (${cg.toFixed(2)} in) ADELANTE. ${limitsStr}`, 'info');
+                    if (cg > aftLimit) addStatusMessage(`INFO (Cat. Normal): CG (${cg.toFixed(2)} in) ATRÁS. ${limitsStr}`, 'info');
+                }
+            } else {
+                addStatusMessage(`ADVERTENCIA: No se pudo determinar límites CG (Cat. Normal) para peso (${weight.toFixed(1)} lbs).`, 'warning');
+            }
+        }
+
+        // --- Determine final category and status based on checks ---
+        if (airplane.limits.defaultCategory === "Utilitaria") {
+            if (utilityChecked && utilityOk) {
+                determinedCategory = "Utilitaria";
+                cgIsInLimitsForSomeCategory = true;
+                const { fwdLimit, aftLimit } = getCGLimitsForWeight(airplane.limits.cgEnvelopeUtility, weight); // Re-fetch for message
+                addStatusMessage(`CG (${cg.toFixed(2)} in) DENTRO de Cat. Utilitaria (${fwdLimit.toFixed(2)} - ${aftLimit.toFixed(2)} in).`, 'ok');
+            } else if (utilityChecked) { 
+                overallInLimits = false; 
+                const { fwdLimit, aftLimit } = getCGLimitsForWeight(airplane.limits.cgEnvelopeUtility, weight);
+                if (fwdLimit !== null && aftLimit !== null) {
+                     if (cg < fwdLimit) addStatusMessage(`ERROR (Cat. Utilitaria por Defecto): CG (${cg.toFixed(2)} in) DEMASIADO ADELANTE. Límite: ${fwdLimit.toFixed(2)} in.`, 'error');
+                     else if (cg > aftLimit) addStatusMessage(`ERROR (Cat. Utilitaria por Defecto): CG (${cg.toFixed(2)} in) DEMASIADO ATRÁS. Límite: ${aftLimit.toFixed(2)} in.`, 'error');
+                     else addStatusMessage(`ERROR: CG fuera de límites para Cat. Utilitaria por defecto.`, 'error'); // Should be covered by above
+                } else {
+                     addStatusMessage(`ERROR: No se pudo verificar CG para Cat. Utilitaria por defecto.`, 'error');
+                }
+            } else { 
+                 addStatusMessage(`ERROR: Configuración incorrecta. Cat. Utilitaria (por defecto) no definida.`, 'error');
+                 overallInLimits = false;
+            }
+        } else if (airplane.limits.defaultCategory === "Normal") {
+            if (normalChecked && normalOk) {
+                determinedCategory = "Normal";
+                cgIsInLimitsForSomeCategory = true;
+                const { fwdLimit, aftLimit } = getCGLimitsForWeight(airplane.limits.cgEnvelopeNormal, weight);
+                addStatusMessage(`CG (${cg.toFixed(2)} in) DENTRO de Cat. Normal (${fwdLimit.toFixed(2)} - ${aftLimit.toFixed(2)} in).`, 'ok');
+            } else if (normalChecked) { 
+                overallInLimits = false; 
+                 const { fwdLimit, aftLimit } = getCGLimitsForWeight(airplane.limits.cgEnvelopeNormal, weight);
+                if (fwdLimit !== null && aftLimit !== null) {
+                     if (cg < fwdLimit) addStatusMessage(`ERROR (Cat. Normal por Defecto): CG (${cg.toFixed(2)} in) DEMASIADO ADELANTE. Límite: ${fwdLimit.toFixed(2)} in.`, 'error');
+                     else if (cg > aftLimit) addStatusMessage(`ERROR (Cat. Normal por Defecto): CG (${cg.toFixed(2)} in) DEMASIADO ATRÁS. Límite: ${aftLimit.toFixed(2)} in.`, 'error');
+                     else addStatusMessage(`ERROR: CG fuera de límites para Cat. Normal por defecto.`, 'error');
+                } else {
+                     addStatusMessage(`ERROR: No se pudo verificar CG para Cat. Normal por defecto.`, 'error');
+                }
+            } else { 
+                addStatusMessage(`ERROR: Configuración incorrecta. Cat. Normal (por defecto) no definida.`, 'error');
+                overallInLimits = false;
+            }
+        } else { // No defaultCategory (e.g., C172M)
+            if (utilityChecked && utilityOk && utilityApplicableByWeight) {
+                determinedCategory = "Utilitaria";
+                cgIsInLimitsForSomeCategory = true;
+                const { fwdLimit, aftLimit } = getCGLimitsForWeight(airplane.limits.cgEnvelopeUtility, weight);
+                addStatusMessage(`CG (${cg.toFixed(2)} in) DENTRO de Cat. Utilitaria (${fwdLimit.toFixed(2)} - ${aftLimit.toFixed(2)} in).`, 'ok');
+            } else if (normalChecked && normalOk) {
+                determinedCategory = "Normal";
+                cgIsInLimitsForSomeCategory = true;
+                const { fwdLimit, aftLimit } = getCGLimitsForWeight(airplane.limits.cgEnvelopeNormal, weight);
+                addStatusMessage(`CG (${cg.toFixed(2)} in) DENTRO de Cat. Normal (${fwdLimit.toFixed(2)} - ${aftLimit.toFixed(2)} in).`, 'ok');
+                if (utilityChecked && utilityApplicableByWeight && !utilityOk) {
+                     addStatusMessage(`INFO: CG fuera de límites para Cat. Utilitaria opcional, pero DENTRO de Cat. Normal.`, 'info');
+                }
+            } else {
+                // Neither is OK, or not applicable
+                overallInLimits = false; // CG is out of all possible/applicable categories
+                let specificCgErrorMsgAdded = false;
+                if (utilityChecked && utilityApplicableByWeight && !utilityOk) {
+                    const { fwdLimit, aftLimit } = getCGLimitsForWeight(airplane.limits.cgEnvelopeUtility, weight);
+                     if (fwdLimit !== null && aftLimit !== null) {
+                        if (cg < fwdLimit) addStatusMessage(`ERROR (Intentando Cat. Utilitaria): CG (${cg.toFixed(2)} in) DEMASIADO ADELANTE. Límite: ${fwdLimit.toFixed(2)} in.`, 'error');
+                        else if (cg > aftLimit) addStatusMessage(`ERROR (Intentando Cat. Utilitaria): CG (${cg.toFixed(2)} in) DEMASIADO ATRÁS. Límite: ${aftLimit.toFixed(2)} in.`, 'error');
+                        else addStatusMessage(`ERROR: CG fuera de límites para Cat. Utilitaria.`, 'error');
+                        specificCgErrorMsgAdded = true;
+                    } else if (!specificCgErrorMsgAdded) { addStatusMessage(`ERROR: No se pudo verificar CG para Cat. Utilitaria.`, 'error'); specificCgErrorMsgAdded = true; }
+                }
+                if (normalChecked && !normalOk) {
+                     const { fwdLimit, aftLimit } = getCGLimitsForWeight(airplane.limits.cgEnvelopeNormal, weight);
+                    if (fwdLimit !== null && aftLimit !== null) {
+                        if (cg < fwdLimit) addStatusMessage(`ERROR (Intentando Cat. Normal): CG (${cg.toFixed(2)} in) DEMASIADO ADELANTE. Límite: ${fwdLimit.toFixed(2)} in.`, 'error');
+                        else if (cg > aftLimit) addStatusMessage(`ERROR (Intentando Cat. Normal): CG (${cg.toFixed(2)} in) DEMASIADO ATRÁS. Límite: ${aftLimit.toFixed(2)} in.`, 'error');
+                        else addStatusMessage(`ERROR: CG fuera de límites para Cat. Normal.`, 'error');
+                        specificCgErrorMsgAdded = true;
+                    } else if (!specificCgErrorMsgAdded) { addStatusMessage(`ERROR: No se pudo verificar CG para Cat. Normal.`, 'error'); specificCgErrorMsgAdded = true; }
+                }
+                if (!utilityChecked && !normalChecked) {
+                     addStatusMessage("ERROR: No hay datos de envolvente de CG definidos para este avión.", "error");
+                     overallInLimits = false; // Should already be false, but explicitly
+                } else if (!specificCgErrorMsgAdded && (!utilityOk || !normalOk)) {
+                    // Fallback if no specific error message was added above but CG is still an issue
+                    addStatusMessage("ERROR: CG fuera de los límites de las categorías aplicables.", "error");
+                }
+            }
+        }
+
+        // Final summary message
+        operationCategorySpan.textContent = determinedCategory;
+        if (overallInLimits && cgIsInLimitsForSomeCategory) {
+            addStatusMessage(`AVIÓN DENTRO DE LÍMITES (Categoría ${determinedCategory}).`, 'ok', true);
+        } else {
+            addStatusMessage("AVIÓN FUERA DE LÍMITES. NO DESPEGAR.", 'error', true);
+        }
     }
 
     function getCGLimitsForWeight(cgEnvelope, currentWeight) { if (!cgEnvelope || cgEnvelope.length === 0) return { fwdLimit: null, aftLimit: null }; const sortedEnvelope = [...cgEnvelope].sort((a, b) => a.weight - b.weight); if (currentWeight < sortedEnvelope[0].weight) return { fwdLimit: sortedEnvelope[0].fwd_in, aftLimit: sortedEnvelope[0].aft_in }; if (currentWeight > sortedEnvelope[sortedEnvelope.length - 1].weight) return { fwdLimit: sortedEnvelope[sortedEnvelope.length - 1].fwd_in, aftLimit: sortedEnvelope[sortedEnvelope.length - 1].aft_in }; for (let i = 0; i < sortedEnvelope.length - 1; i++) { const p1 = sortedEnvelope[i]; const p2 = sortedEnvelope[i + 1]; if (currentWeight >= p1.weight && currentWeight <= p2.weight) { const weightRatio = (p2.weight - p1.weight === 0) ? 0 : (currentWeight - p1.weight) / (p2.weight - p1.weight); const fwdLimit = p1.fwd_in + weightRatio * (p2.fwd_in - p1.fwd_in); const aftLimit = p1.aft_in + weightRatio * (p2.aft_in - p1.aft_in); return { fwdLimit, aftLimit };}} if (currentWeight === sortedEnvelope[sortedEnvelope.length - 1].weight) { return { fwdLimit: sortedEnvelope[sortedEnvelope.length - 1].fwd_in, aftLimit: sortedEnvelope[sortedEnvelope.length - 1].aft_in };} return { fwdLimit: null, aftLimit: null };}
