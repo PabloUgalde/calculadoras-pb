@@ -68,6 +68,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 { name: "Equipaje Área 2 (Max 40 lbs)", arm_in: 84.0, id: "baggage2", type: "paired_weight", max_lbs: 40 } ],   
             limits: { maxTakeOffWeight_lbs: 1600, maxLandingWeight_lbs: 1600, cgEnvelopeGraphUtility: [ { x: 34.5, y: 1100 }, { x: 40.0, y: 1320 }, { x: 52.5, y: 1600 }, { x: 60.0, y: 1600 }, { x: 49.53, y: 1320 }, { x: 41.3, y: 1100 }, { x: 34.5, y: 1100 } ], cgEnvelopeUtility: [ { weight: 1100, fwd_in: 31.36, aft_in: 37.55 }, { weight: 1320, fwd_in: 30.30, aft_in: 37.52 }, { weight: 1600, fwd_in: 32.81, aft_in: 37.50 } ], maxCombinedBaggage_lbs: 120, defaultCategory: "Utilitaria" }
         },
+        "c150l_kuh": {
+            name: "Cessna 150L Commuter (CC-KUH)",
+            emptyWeight_lbs: 1140.9, emptyMoment_lb_in: 39945.8, fuel_gallons_per_lbs: 1 / 6,
+            stations: [ 
+                { name: "Aceite (6 Qts)", arm_in: -9.09, id: "oil", type: "single_weight", default_value: 11 }, 
+                { name: "Piloto y Pasajero", arm_in: 39.0, id: "front_pax", type: "paired_weight" }, 
+                { name: "Combustible Usable (Gal)", arm_in: 42.2, id: "fuel", type: "paired_fuel", max_gallons: 22.5 }, 
+                { name: "Equipaje Área 1 (Max 120 lbs)", arm_in: 64.0, id: "baggage1", type: "paired_weight", max_lbs: 120 }, 
+                { name: "Equipaje Área 2 (Max 40 lbs)", arm_in: 84.0, id: "baggage2", type: "paired_weight", max_lbs: 40 } ],   
+            limits: { maxTakeOffWeight_lbs: 1600, maxLandingWeight_lbs: 1600, cgEnvelopeGraphUtility: [ { x: 34.5, y: 1100 }, { x: 40.0, y: 1320 }, { x: 52.5, y: 1600 }, { x: 60.0, y: 1600 }, { x: 49.53, y: 1320 }, { x: 41.3, y: 1100 }, { x: 34.5, y: 1100 } ], cgEnvelopeUtility: [ { weight: 1100, fwd_in: 31.36, aft_in: 37.55 }, { weight: 1320, fwd_in: 30.30, aft_in: 37.52 }, { weight: 1600, fwd_in: 32.81, aft_in: 37.50 } ], maxCombinedBaggage_lbs: 120, defaultCategory: "Utilitaria" }
+        },
         "c172m_kua": {
             name: "Cessna 172M Skyhawk (CC-KUA)",
             emptyWeight_lbs: 1457.5, emptyMoment_lb_in: 61350.0, fuel_gallons_per_lbs: 1 / 6,
