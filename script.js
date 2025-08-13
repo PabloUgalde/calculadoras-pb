@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Funciones Principales ---
     function populateAirplaneSelect() {
         airplaneSelect.innerHTML = '<option value="">-- Elija un avión --</option>';
-        const airplaneOrder = ["c150f_snc", "c150l_kug", "c172m_kua", "c182g_klc"];
+        const airplaneOrder = ["c150f_snc", "c150l_kug", "c150l_kuh", "c172m_kua", "c182g_klc"];
         airplaneOrder.forEach(id => {
             if (airplanesData[id]) {
                 const option = document.createElement('option'); option.value = id; option.textContent = airplanesData[id].name;
