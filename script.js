@@ -45,17 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 { name: "Equipaje Área 1 (Max 120 lbs)", arm_in: 64.0, id: "baggage1", type: "paired_weight", max_lbs: 120 },
                 { name: "Equipaje Área 2 (Max 40 lbs)", arm_in: 84.0, id: "baggage2", type: "paired_weight", max_lbs: 40 } 
             ],
-            limits: { maxTakeOffWeight_lbs: 1600, maxLandingWeight_lbs: 1600, cgEnvelopeGraphUtility: [ 
-                { x: 36.1, y: 1150 }, { x: 40.5, y: 1285 }, { x: 52.8, y: 1600 }, 
-                { x: 60.0, y: 1600 }, { x: 49.48, y: 1285 }, { x: 44.97, y: 1150 }, 
-                { x: 36.1, y: 1150 } 
-            ], 
-                cgEnvelopeUtility: [ 
-                    { weight: 1150, fwd_in: 31.39, aft_in: 39.10 }, 
-                    { weight: 1285, fwd_in: 31.52, aft_in: 38.51 }, 
-                    { weight: 1600, fwd_in: 33.00, aft_in: 37.50 } 
-                ], 
-                maxCombinedBaggage_lbs: 120, defaultCategory: "Utilitaria" }
+            limits: { maxTakeOffWeight_lbs: 1600, maxLandingWeight_lbs: 1600, cgEnvelopeGraphUtility: [ { x: 36.1, y: 1150 }, { x: 40.5, y: 1285 }, { x: 52.8, y: 1600 }, { x: 60.0, y: 1600 }, { x: 49.48, y: 1285 }, { x: 44.97, y: 1150 }, { x: 36.1, y: 1150 } ], cgEnvelopeUtility: [ { weight: 1150, fwd_in: 31.39, aft_in: 39.10 }, { weight: 1285, fwd_in: 31.52, aft_in: 38.51 }, { weight: 1600, fwd_in: 33.00, aft_in: 37.50 } ], maxCombinedBaggage_lbs: 120, defaultCategory: "Utilitaria" }
         },
         "c150l_kug": {
             name: "Cessna 150L Commuter (CC-KUG)",
@@ -230,19 +220,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function setupInputNavigation(inputs) { 
-        console.log("setupInputNavigation: Configurando navegación para", inputs.length, "inputs."); // LOG NUEVO
         inputs.forEach((input, index) => { 
-            console.log("setupInputNavigation: Añadiendo listener a input:", input.id, "en índice:", index); // LOG NUEVO
             input.addEventListener('keydown', (e) => { 
-                // console.log("Input:", input.id, "Keydown event:", e.key); // LOG MUY DETALLADO (descomentar si es necesario)
                 if (e.key === 'Enter' || (e.key === 'Tab' && !e.shiftKey && index < inputs.length - 1)) { 
-                    console.log("Enter/Tab detectado en:", input.id, "Intentando foco en el siguiente."); // LOG NUEVO
                     e.preventDefault(); 
-                    if (inputs[index + 1]) { // Verificar que el siguiente input exista
+                    if (inputs[index + 1]) {
                         inputs[index + 1].focus();
-                        console.log("Foco puesto en:", inputs[index + 1].id); // LOG NUEVO
-                    } else {
-                        console.log("No hay siguiente input para hacer foco desde:", input.id); // LOG NUEVO
                     }
                 }
             });
@@ -434,15 +417,16 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function addStatusMessage(message, type, isSummary = false) { const p = document.createElement('p'); p.textContent = message; p.classList.add(`status-${type}`); if (isSummary) { p.style.fontWeight = 'bold'; p.style.fontSize = '1.1em';} statusMessagesDiv.appendChild(p);}
     
-        function updateCgChart(airplane, calculatedWeight, calculatedMoment1000) {
+    // ======================================================================
+    // =           INICIO DE LA FUNCIÓN MODIFICADA PARA EL GRÁFICO          =
+    // ======================================================================
+    function updateCgChart(airplane, calculatedWeight, calculatedMoment1000) {
         if (cgChart) { cgChart.destroy(); }
         const datasets = [];
 
-        // Variables para determinar los límites de las escalas basados en las envolventes
         let minX_from_envelopes = Infinity, maxX_from_envelopes = -Infinity;
         let minY_from_envelopes = Infinity, maxY_from_envelopes = -Infinity; 
 
-        // Función interna para procesar los puntos de una envolvente y actualizar los límites
         function processEnvelopeForBounds(envelopeData) {
             if (envelopeData && envelopeData.length > 0) {
                 envelopeData.forEach(point => {
@@ -456,14 +440,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         }
 
-        // 1. DIBUJAR ENVOLVENTES Y PROCESAR LÍMITES
-        // (Esta parte ya maneja múltiples categorías como C172 si ambas cgEnvelopeGraph* existen)
         if (airplane.limits.cgEnvelopeGraphUtility) {
             if (processEnvelopeForBounds(airplane.limits.cgEnvelopeGraphUtility)) {
                 datasets.push({
                     label: 'Categoría Utilitaria',
                     data: airplane.limits.cgEnvelopeGraphUtility,
-                    borderColor: 'rgba(255, 159, 64, 1)', backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                    borderColor: 'rgba(212, 175, 55, 1)',      // <-- CAMBIADO a Dorado Sólido
+                    backgroundColor: 'rgba(212, 175, 55, 0.2)', // <-- CAMBIADO a Dorado Translúcido
                     borderWidth: 2, fill: true, pointRadius: 0, tension: 0
                 });
             }
@@ -474,30 +457,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 datasets.push({
                     label: 'Categoría Normal',
                     data: airplane.limits.cgEnvelopeGraphNormal,
-                    borderColor: 'rgba(75, 192, 192, 1)', backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(224, 224, 224, 1)',      // <-- CAMBIADO a Blanco/Gris Claro Sólido
+                    backgroundColor: 'rgba(224, 224, 224, 0.2)', // <-- CAMBIADO a Blanco/Gris Claro Translúcido
                     borderWidth: 2, fill: true, pointRadius: 0, tension: 0
                 });
             }
         }
         
-        // 2. ESTABLECER LÍMITES DE DATOS INICIALES (X e Y)
-        // finalMinY/finalMaxY considerarán todas las envolventes Y el punto calculado.
-        let finalMinX = minX_from_envelopes;
-        let finalMaxX = maxX_from_envelopes;
-        let finalMinY = minY_from_envelopes;
-        // finalMaxY considerará el MTOW del avión como un techo inicial, además de los datos de la envolvente.
-        let finalMaxY = Math.max(maxY_from_envelopes === -Infinity ? 0 : maxY_from_envelopes, airplane.limits.maxTakeOffWeight_lbs || 0);
-        if (maxY_from_envelopes > finalMaxY) { // Caso raro: envolvente supera MTOW
-             finalMaxY = maxY_from_envelopes;
-        }
+        let finalMinX = minX_from_envelopes, finalMaxX = maxX_from_envelopes;
+        let finalMinY = minY_from_envelopes, finalMaxY = Math.max(maxY_from_envelopes === -Infinity ? 0 : maxY_from_envelopes, airplane.limits.maxTakeOffWeight_lbs || 0);
+        if (maxY_from_envelopes > finalMaxY) { finalMaxY = maxY_from_envelopes; }
 
-
-        // 3. AÑADIR PUNTO CALCULADO Y EXPANDIR LÍMITES DE DATOS SI ES NECESARIO
-        if (calculatedWeight > 0 && calculatedMoment1000 != null) { // Asegurar que calculatedMoment1000 no sea null/undefined
+        if (calculatedWeight > 0 && calculatedMoment1000 != null) {
             datasets.push({ 
                 label: 'Punto Calculado', 
                 data: [{ x: calculatedMoment1000, y: calculatedWeight }], 
-                borderColor: 'rgba(255, 0, 0, 1)', backgroundColor: 'rgba(255, 0, 0, 1)', 
+                borderColor: 'rgba(211, 47, 47, 1)',      // <-- CAMBIADO a Rojo de Acento
+                backgroundColor: 'rgba(211, 47, 47, 1)',  // <-- CAMBIADO a Rojo de Acento
                 pointRadius: 6, pointHoverRadius: 8, type: 'scatter' 
             });
             if (calculatedMoment1000 < finalMinX) finalMinX = calculatedMoment1000;
@@ -506,122 +482,25 @@ document.addEventListener('DOMContentLoaded', () => {
             if (calculatedWeight > finalMaxY) finalMaxY = calculatedWeight;
         }
         
-        // --- INICIO DE LA LÓGICA MODIFICADA PARA ESCALAS X e Y ---
+        // (La lógica de cálculo de escalas se mantiene sin cambios, es robusta)
         let scale_x_min_value, scale_x_max_value;
+        if (finalMinX === Infinity) { scale_x_min_value = 0; scale_x_max_value = 100; }
+        else { const xDataRange = finalMaxX - finalMinX; const xPadding = Math.max(5, xDataRange * 0.05 || 10); scale_x_min_value = Math.floor((finalMinX - xPadding) / 5) * 5; scale_x_max_value = Math.ceil((finalMaxX + xPadding) / 5) * 5; }
+        if (scale_x_min_value >= scale_x_max_value) { scale_x_max_value = scale_x_min_value + 20; }
+
         let scale_y_min_value, scale_y_max_value;
-
-        // Escala X
-        if (finalMinX === Infinity) { // No hay datos X (sin envolventes ni punto)
-            scale_x_min_value = 0;
-            scale_x_max_value = 100; // Valores por defecto
-        } else {
-            const xDataRange = finalMaxX - finalMinX;
-            const xPadding = Math.max(5, xDataRange * 0.05 || 10); // Al menos 5 unidades, o 5%
-            scale_x_min_value = Math.floor((finalMinX - xPadding) / 5) * 5; // Redondear al 5 inferior
-            scale_x_max_value = Math.ceil((finalMaxX + xPadding) / 5) * 5;   // Redondear al 5 superior
+        if (finalMinY === Infinity) { scale_y_min_value = 1000; scale_y_max_value = 2000; }
+        else { let temp_min_y = finalMinY; let temp_max_y = finalMaxY; const yDataRange = temp_max_y - temp_min_y; const yPadding = Math.max(50, yDataRange * 0.05 || 50); temp_min_y -= yPadding; temp_max_y += yPadding; scale_y_min_value = Math.floor(temp_min_y / 50) * 50; scale_y_max_value = Math.ceil(temp_max_y / 50) * 50;
+            if (finalMinY % 50 === 0) { scale_y_min_value = finalMinY; } else { scale_y_min_value = Math.floor(finalMinY / 50) * 50; }
+            let effectiveMaxY = Math.max(finalMaxY, airplane.limits.maxTakeOffWeight_lbs || 0);
+            if (effectiveMaxY % 50 === 0) { scale_y_max_value = effectiveMaxY; } else { scale_y_max_value = Math.ceil(effectiveMaxY / 50) * 50; }
+            const visualPaddingY = Math.max(50, (scale_y_max_value - scale_y_min_value) * 0.05);
+            scale_y_max_value += visualPaddingY;
+            scale_y_max_value = Math.ceil(scale_y_max_value / 50) * 50;
         }
-        if (scale_x_min_value >= scale_x_max_value) {
-             scale_x_max_value = scale_x_min_value + 20; // Asegurar rango mínimo para X
-        }
-
-
-        // Escala Y
-        if (finalMinY === Infinity) { // No hay datos Y (sin envolventes ni punto)
-            scale_y_min_value = 1000;
-            scale_y_max_value = 2000; // Valores por defecto
-        } else {
-            // Usar finalMinY y finalMaxY que ya incluyen envolventes y punto calculado.
-            // Y finalMaxY ya considera el MTOW.
-            let temp_min_y = finalMinY;
-            let temp_max_y = finalMaxY;
-
-            const yDataRange = temp_max_y - temp_min_y;
-            const yPadding = Math.max(50, yDataRange * 0.05 || 50); // Al menos 50 lbs, o 5% del rango
-
-            // Aplicar padding
-            temp_min_y -= yPadding;
-            temp_max_y += yPadding;
-
-            // Redondear a múltiplos de 50 para "nice" ticks
-            scale_y_min_value = Math.floor(temp_min_y / 50) * 50;
-            scale_y_max_value = Math.ceil(temp_max_y / 50) * 50;
-
-            // Ajuste para el problema del SNC: si el dato más bajo es X50 (ej. 1150)
-            // y el redondeo con padding lo baja (ej. 1100), intentar mantenerlo en X50.
-            // Esto se hace si el `finalMinY` (dato real) es un múltiplo de 50 y el padding lo alejó demasiado.
-            if (finalMinY % 50 === 0 && scale_y_min_value < finalMinY) {
-                // Si finalMinY es 1150, y scale_y_min_value se calculó como 1100.
-                // ¿Deberíamos subirlo a 1150? Solo si no "corta" el padding.
-                // La lógica anterior de `temp_min_y -= yPadding` ya dio un margen.
-                // El Math.floor(temp_min_y / 50) * 50 ya busca el tick "bonito".
-                // Ejemplo SNC: finalMinY = 1150. finalMaxY = 1600 (MTOW).
-                // yDataRange = 450. yPadding = max(50, 450*0.05=22.5) = 50.
-                // temp_min_y = 1150 - 50 = 1100.
-                // temp_max_y = 1600 + 50 = 1650.
-                // scale_y_min_value = Math.floor(1100 / 50) * 50 = 1100.
-                // scale_y_max_value = Math.ceil(1650 / 50) * 50 = 1650.
-                // Esto es el comportamiento "INCORRECTO" de la imagen.
-
-                // Para obtener el comportamiento "CORRECTO" (1150 empieza en 1150, 1800 en 1800):
-                // Necesitamos que el `min` del eje pueda ser el dato mismo si es "bonito".
-                // Revisión de la lógica Y:
-                scale_y_min_value = finalMinY; // Empezar con el dato real
-                // Si el dato real no es múltiplo de 50, redondearlo hacia abajo
-                if (scale_y_min_value % 50 !== 0) {
-                    scale_y_min_value = Math.floor(scale_y_min_value / 50) * 50;
-                }
-                // Ahora aplicar un padding inferior *solo si el dato no estaba ya en un tick bonito*
-                // O si el dato está justo en el borde, un pequeño margen siempre es bueno.
-                // A menos que queramos que el eje empiece justo en el dato (como 1800 en el ejemplo "CORRECTO")
-                // Dejemos que Chart.js maneje el primer tick. Si `min` es 1150, el tick debería ser 1150 si el stepSize es 50.
-
-                // Considerar `suggestedMin` y `suggestedMax` para Chart.js y que él decida los ticks.
-                // Pero si queremos control total:
-                // Eje Y Mínimo:
-                if (finalMinY % 50 === 0) { // Si es 1150, 1600, etc.
-                    scale_y_min_value = finalMinY; // Queremos que el eje PUEDA empezar aquí
-                } else { // Si es 1137, 1580
-                    scale_y_min_value = Math.floor(finalMinY / 50) * 50; // Redondear abajo
-                }
-                // Para el caso 1150, scale_y_min_value es 1150. Para 1800, es 1800. Correcto.
-                // Para 1137, es 1100.
-
-                // Eje Y Máximo:
-                let effectiveMaxY = Math.max(finalMaxY, airplane.limits.maxTakeOffWeight_lbs || 0);
-                if (effectiveMaxY % 50 === 0) {
-                    scale_y_max_value = effectiveMaxY;
-                } else {
-                    scale_y_max_value = Math.ceil(effectiveMaxY / 50) * 50;
-                }
-
-                // Ahora, aplicar un padding visual para que los datos no estén pegados a los bordes
-                const visualPaddingY = Math.max(50, (scale_y_max_value - scale_y_min_value) * 0.05);
-                
-                // Solo aplicar padding si el dato está en el mismo borde que la escala calculada,
-                // y si al restar el padding no cruzamos otro tick importante si no es necesario.
-                if (scale_y_min_value === finalMinY && finalMinY % 50 === 0) {
-                     // Si es 1150, y la escala es 1150, restarle un poco para que no esté pegado.
-                     // Si restamos 50, da 1100 (comportamiento incorrecto).
-                     // Si restamos 25, da 1125 (tick no bonito).
-                     // Lo mejor es no restar nada y dejar que Chart.js ponga el tick.
-                     // Si el dato es 1150, y el min del eje es 1150, Chart.js debería mostrarlo bien.
-                     // El "espacio" vendrá de si el siguiente tick es 1200.
-                } else { // Si la escala ya está por debajo del dato (e.g. dato 1137, escala 1100)
-                    // No es necesario más padding inferior en este caso.
-                }
-                // Para el tope, siempre es bueno un poco de espacio.
-                scale_y_max_value += visualPaddingY;
-                scale_y_max_value = Math.ceil(scale_y_max_value / 50) * 50; // Redondear de nuevo
-            }
-        }
-
-        // Asegurar que min < max y no negativo
         if (scale_y_min_value < 0) scale_y_min_value = 0;
-        if (scale_y_min_value >= scale_y_max_value) {
-            scale_y_max_value = scale_y_min_value + Math.max(200, (airplane.limits.maxTakeOffWeight_lbs || 2000) * 0.1);
-             if (scale_y_min_value >= scale_y_max_value) scale_y_max_value = scale_y_min_value + 200; // Fallback
-        }
-        // --- FIN DE LA LÓGICA MODIFICADA PARA ESCALAS ---
+        if (scale_y_min_value >= scale_y_max_value) { scale_y_max_value = scale_y_min_value + Math.max(200, (airplane.limits.maxTakeOffWeight_lbs || 2000) * 0.1); if (scale_y_min_value >= scale_y_max_value) scale_y_max_value = scale_y_min_value + 200; }
+        
 
         cgChart = new Chart(cgEnvelopeChartCanvas, {
             type: 'line', data: { datasets: datasets },
@@ -630,27 +509,60 @@ document.addEventListener('DOMContentLoaded', () => {
                 scales: {
                     x: {
                         type: 'linear', position: 'bottom',
-                        title: { display: true, text: 'Momento Cargado / 1000 (lb-in)' },
-                        min: scale_x_min_value, // Usar los calculados
-                        max: scale_x_max_value  // Usar los calculados
+                        title: { 
+                            display: true, 
+                            text: 'Momento Cargado / 1000 (lb-in)',
+                            color: '#E0E0E0' // <-- AÑADIDO
+                        },
+                        ticks: {
+                            color: '#E0E0E0' // <-- AÑADIDO
+                        },
+                        grid: {
+                            color: 'rgba(224, 224, 224, 0.15)', // <-- AÑADIDO (Líneas de la cuadrícula sutiles)
+                            borderColor: '#383838' // <-- AÑADIDO (Línea del eje)
+                        }
                     },
                     y: {
-                        title: { display: true, text: 'Peso de Aeronave Cargada (lbs)' },
-                        min: scale_y_min_value, // Usar los calculados
-                        max: scale_y_max_value, // Usar los calculados
+                        title: { 
+                            display: true, 
+                            text: 'Peso de Aeronave Cargada (lbs)',
+                            color: '#E0E0E0' // <-- AÑADIDO
+                        },
                         ticks: {
-                            // Podríamos forzar un stepSize si es necesario, pero usualmente es mejor automático
-                            // stepSize: 50 // Descomentar y probar si los ticks automáticos no son ideales
+                            color: '#E0E0E0' // <-- AÑADIDO
+                        },
+                        grid: {
+                            color: 'rgba(224, 224, 224, 0.15)', // <-- AÑADIDO (Líneas de la cuadrícula sutiles)
+                            borderColor: '#383838' // <-- AÑADIDO (Línea del eje)
                         }
                     }
                 },
                 plugins: { 
-                    legend: { position: 'top' }, 
-                    tooltip: { callbacks: { label: function(context) { let label = context.dataset.label || ''; if (label) label += ': '; if (context.parsed.y !== null) label += `Peso ${context.parsed.y.toFixed(0)} lbs`; if (context.parsed.x !== null) label += `, Mom/1000 ${context.parsed.x.toFixed(1)}`; return label;}}}
+                    legend: { 
+                        position: 'top',
+                        labels: {
+                            color: '#E0E0E0' // <-- AÑADIDO
+                        }
+                    }, 
+                    tooltip: { 
+                        callbacks: { 
+                            label: function(context) { 
+                                let label = context.dataset.label || ''; 
+                                if (label) label += ': '; 
+                                if (context.parsed.y !== null) label += `Peso ${context.parsed.y.toFixed(0)} lbs`; 
+                                if (context.parsed.x !== null) label += `, Mom/1000 ${context.parsed.x.toFixed(1)}`; 
+                                return label;
+                            }
+                        }
+                    }
                 }
             }
         });
     }
+    // ======================================================================
+    // =           FIN DE LA FUNCIÓN MODIFICADA PARA EL GRÁFICO             =
+    // ======================================================================
+
 
 // --- Event Listeners ---
 airplaneSelect.addEventListener('change', (e) => { displayAirplaneInputs(e.target.value); });
